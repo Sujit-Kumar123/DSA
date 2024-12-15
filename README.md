@@ -5,12 +5,10 @@ Approach: Use a hash map to store the difference between the target and the curr
 Time Complexity: O(n).
 
 
-def twoSum(nums, target):
 
+def twoSum(nums, target):
     hashmap = {}
-    
     for i, num in enumerate(nums):
-    
         diff = target - num
         if diff in hashmap:
             return [hashmap[diff], i]
