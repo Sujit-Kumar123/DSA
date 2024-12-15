@@ -7,7 +7,9 @@ Time Complexity: O(n).
 
 
 def twoSum(nums, target):
+
     hashmap = {}
+    
     for i, num in enumerate(nums):
         diff = target - num
         if diff in hashmap:
