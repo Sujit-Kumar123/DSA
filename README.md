@@ -25,3 +25,17 @@ Time Complexity: O(n).
     def missingNumber(nums):
         n = len(nums)
         return n * (n + 1) // 2 - sum(nums)
+
+# 3. Detect a Cycle in a Linked List
+Problem: Check if a linked list contains a cycle.
+Approach: Use Floyd’s Cycle Detection (two-pointer method).
+Time Complexity: O(n).
+
+    def hasCycle(head):
+        slow, fast = head, head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                return True
+        return False
