@@ -54,3 +54,18 @@ Time Complexity: O(m + n).
                 nums1[m+n-1] = nums2[n-1]
                 n -= 1
         nums1[:n] = nums2[:n]
+
+
+# 5. Reverse a Linked List
+Problem: Reverse a singly linked list.
+Approach: Use iterative or recursive methods.
+Time Complexity: O(n).
+
+    def reverseList(head):
+        prev, curr = None, head
+        while curr:
+            nxt = curr.next
+            curr.next = prev
+            prev = curr
+            curr = nxt
+        return prev
