@@ -115,6 +115,36 @@ Time Complexity: O(1) amortized.
         def empty(self):
             return not self.stack1 and not self.stack2
 
+# 8. Binary Tree Inorder Traversal
+Problem: Perform an inorder traversal of a binary tree.
+Approach: Use recursion or a stack for iterative traversal.
+Time Complexity: O(n).
+
+    def inorderTraversal(root):
+        result, stack = [], []
+        while root or stack:
+            while root:
+                stack.append(root)
+                root = root.left
+            root = stack.pop()
+            result.append(root.val)
+            root = root.right
+        return result
+
+# 9.Lowest Common Ancestor of a Binary Tree
+Problem: Find the LCA of two nodes in a binary tree.
+Approach: Use recursion to find the split point.
+Time Complexity: O(n).
+
+    def lowestCommonAncestor(root, p, q):
+        if not root or root == p or root == q:
+            return root
+        left = lowestCommonAncestor(root.left, p, q)
+        right = lowestCommonAncestor(root.right, p, q)
+        return root if left and right else left or right
+
+
+
     
 
 
