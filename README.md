@@ -517,6 +517,8 @@ Space Complexity: O(1)
 Count the occurrence of each element and build the sorted array.
 Time Complexity: O(n + k), where k is the range of the input.
 Space Complexity: O(k)
+
+
     def counting_sort(arr):
         max_val = max(arr)
         count = [0] * (max_val + 1)
@@ -594,6 +596,7 @@ Space Complexity: O(n)
 Distribute elements into buckets, sort each bucket, and merge.
 Time Complexity: O(n + k)
 Space Complexity: O(n)
+    
     def bucket_sort(arr):
         bucket = [[] for _ in range(len(arr))]
     
