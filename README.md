@@ -69,3 +69,52 @@ Time Complexity: O(n).
             prev = curr
             curr = nxt
         return prev
+
+# 6. Valid Parentheses
+Problem: Check if a string of parentheses is valid.
+Approach: Use a stack to push and pop matching brackets.
+Time Complexity: O(n).
+
+    def isValid(s):
+        stack = []
+        mapping = {')': '(', '}': '{', ']': '['}
+        for char in s:
+            if char in mapping:
+                top = stack.pop() if stack else '#'
+                if mapping[char] != top:
+                    return False
+            else:
+                stack.append(char)
+        return not stack
+
+# 7. Implement a Queue using Stacks
+Problem: Implement a queue using two stacks.
+Approach: Use two stacks: one for enqueue and another for dequeue.
+Time Complexity: O(1) amortized.
+
+    class MyQueue:
+        def __init__(self):
+            self.stack1 = []
+            self.stack2 = []
+    
+        def push(self, x):
+            self.stack1.append(x)
+    
+        def pop(self):
+            if not self.stack2:
+                while self.stack1:
+                    self.stack2.append(self.stack1.pop())
+            return self.stack2.pop()
+    
+        def peek(self):
+            if not self.stack2:
+                while self.stack1:
+                    self.stack2.append(self.stack1.pop())
+            return self.stack2[-1]
+    
+        def empty(self):
+            return not self.stack1 and not self.stack2
+
+    
+
+
