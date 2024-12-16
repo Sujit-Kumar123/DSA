@@ -166,6 +166,87 @@ Time Complexity: O(log n).
                     right = mid - 1
         return -1
 
+# 11. Maximum Subarray (Kadane’s Algorithm)
+Problem: Find the contiguous subarray with the largest sum.
+Approach: Use Kadane’s Algorithm to calculate the maximum sum at each index.
+Time Complexity: O(n).
+
+    def maxSubArray(nums):
+        max_sum = curr_sum = nums[0]
+        for num in nums[1:]:
+            curr_sum = max(num, curr_sum + num)
+            max_sum = max(max_sum, curr_sum)
+        return max_sum
+
+# 12. Rotate Matrix (90 Degrees Clockwise)
+Problem: Rotate an n x n 2D matrix in place.
+Approach: First transpose the matrix, then reverse each row.
+Time Complexity: O(n²).
+
+    def rotate(matrix):
+        n = len(matrix)
+        for i in range(n):
+            for j in range(i, n):
+                matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+        for row in matrix:
+            row.reverse()
+
+# 13. Trapping Rain Water
+Problem: Calculate the amount of rainwater that can be trapped between bars.
+Approach: Use two-pointer approach to calculate the trapped water at each bar.
+Time Complexity: O(n).
+
+    def trap(height):
+        left, right = 0, len(height) - 1
+        left_max, right_max = 0, 0
+        water = 0
+        while left <= right:
+            if height[left] < height[right]:
+                if height[left] >= left_max:
+                    left_max = height[left]
+                else:
+                    water += left_max - height[left]
+                left += 1
+            else:
+                if height[right] >= right_max:
+                    right_max = height[right]
+                else:
+                    water += right_max - height[right]
+                right -= 1
+        return water
+# 14. Set Matrix Zeroes
+Problem: If an element in a matrix is 0, set its entire row and column to 0.
+Approach: Use the first row and column as markers for zero rows/columns.
+Time Complexity: O(m * n).
+    
+    def setZeroes(matrix):
+        rows, cols = len(matrix), len(matrix[0])
+        row_zero = False
+    
+        for r in range(rows):
+            for c in range(cols):
+                if matrix[r][c] == 0:
+                    matrix[0][c] = 0
+                    if r == 0:
+                        row_zero = True
+                    else:
+                        matrix[r][0] = 0
+    
+        for r in range(1, rows):
+            for c in range(1, cols):
+                if matrix[0][c] == 0 or matrix[r][0] == 0:
+                    matrix[r][c] = 0
+    
+        if matrix[0][0] == 0:
+            for r in range(rows):
+                matrix[r][0] = 0
+    
+        if row_zero:
+            for c in range(cols):
+                matrix[0][c] = 0
+
+
+
 
 
 
