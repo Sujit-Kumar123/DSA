@@ -375,6 +375,247 @@ Time Complexity: O(V + E).
     
         return stack[::-1]
 
+# 21. Bubble Sort
+Repeatedly swap adjacent elements if they are in the wrong order.
+Time Complexity: O(n²)
+Space Complexity: O(1)
+
+    def bubble_sort(arr):
+        n = len(arr)
+        for i in range(n):
+            for j in range(0, n - i - 1):
+                if arr[j] > arr[j + 1]:
+                    arr[j], arr[j +1] = arr[j+1], arr[j]
+        return arr
+        
+# 22. Selection Sort
+Select the smallest element and place it at the beginning.
+Time Complexity: O(n²)
+Space Complexity: O(1)
+
+    def selection_sort(arr):
+        n = len(arr)
+        for i in range(n):
+            min_idx = i
+            for j in range(i + 1, n):
+                if arr[j] < arr[min_idx]:
+                    min_idx = j
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]
+        return arr
+
+    # Example
+    print(selection_sort([64, 25, 12, 22, 11]))
+
+# 23. Insertion Sort
+Build the sorted list one item at a time.
+Time Complexity: O(n²)
+Space Complexity: O(1)
+
+    def insertion_sort(arr):
+        for i in range(1, len(arr)):
+            key = arr[i]
+            j = i - 1
+            while j >= 0 and key < arr[j]:
+                arr[j + 1] = arr[j]
+                j -= 1
+            arr[j + 1] = key
+        return arr
+
+    # Example
+    print(insertion_sort([12, 11, 13, 5, 6]))
+
+# 24. Merge Sort
+Divide and conquer: divide the array into halves, sort each half, and merge them.
+Time Complexity: O(n log n)
+Space Complexity: O(n)
+
+        def merge_sort(arr):
+            if len(arr) > 1:
+                mid = len(arr) // 2
+                left = arr[:mid]
+                right = arr[mid:]
+        
+                merge_sort(left)
+                merge_sort(right)
+        
+                i = j = k = 0
+        
+                while i < len(left) and j < len(right):
+                    if left[i] < right[j]:
+                        arr[k] = left[i]
+                        i += 1
+                    else:
+                        arr[k] = right[j]
+                        j += 1
+                    k += 1
+        
+                while i < len(left):
+                    arr[k] = left[i]
+                    i += 1
+                    k += 1
+        
+                while j < len(right):
+                    arr[k] = right[j]
+                    j += 1
+                    k += 1
+            return arr
+
+    # Example
+    print(merge_sort([38, 27, 43, 3, 9, 82, 10]))
+
+# 25. Quick Sort
+Pick a pivot, partition the array, and recursively sort the partitions.
+Time Complexity: O(n log n) (average case), O(n²) (worst case)
+Space Complexity: O(log n) (for recursion stack)
+
+    def quick_sort(arr):
+        if len(arr) <= 1:
+            return arr
+        pivot = arr[len(arr) // 2]
+        left = [x for x in arr if x < pivot]
+        middle = [x for x in arr if x == pivot]
+        right = [x for x in arr if x > pivot]
+        return quick_sort(left) + middle + quick_sort(right)
+
+    # Example
+    print(quick_sort([10, 7, 8, 9, 1, 5]))
+
+# 26. Heap Sort
+Build a max heap and repeatedly extract the maximum element.
+Time Complexity: O(n log n)
+Space Complexity: O(1)
+
+     def heapify(arr, n, i):
+        largest = i
+        left = 2 * i + 1
+        right = 2 * i + 2
+    
+        if left < n and arr[left] > arr[largest]:
+            largest = left
+        if right < n and arr[right] > arr[largest]:
+            largest = right
+        if largest != i:
+            arr[i], arr[largest] = arr[largest], arr[i]
+            heapify(arr, n, largest)
+
+    def heap_sort(arr):
+        n = len(arr)
+    
+        for i in range(n // 2 - 1, -1, -1):
+            heapify(arr, n, i)
+    
+        for i in range(n - 1, 0, -1):
+            arr[i], arr[0] = arr[0], arr[i]
+            heapify(arr, i, 0)
+    
+        return arr
+
+    # Example
+    print(heap_sort([12, 11, 13, 5, 6, 7]))
+
+# 27. Counting Sort
+Count the occurrence of each element and build the sorted array.
+Time Complexity: O(n + k), where k is the range of the input.
+Space Complexity: O(k)
+    def counting_sort(arr):
+        max_val = max(arr)
+        count = [0] * (max_val + 1)
+    
+        for num in arr:
+            count[num] += 1
+    
+        sorted_arr = []
+        for i, freq in enumerate(count):
+            sorted_arr.extend([i] * freq)
+    
+        return sorted_arr
+
+    # Example
+    print(counting_sort([4, 2, 2, 8, 3, 3, 1]))
+
+# 28. Counting Sort
+Count the occurrence of each element and build the sorted array.
+Time Complexity: O(n + k), where k is the range of the input.
+Space Complexity: O(k)
+
+    def counting_sort(arr):
+        max_val = max(arr)
+        count = [0] * (max_val + 1)
+    
+        for num in arr:
+            count[num] += 1
+    
+        sorted_arr = []
+        for i, freq in enumerate(count):
+            sorted_arr.extend([i] * freq)
+    
+        return sorted_arr
+
+    # Example
+    print(counting_sort([4, 2, 2, 8, 3, 3, 1]))
+ 
+# 29.  Radix Sort
+Sort based on individual digits, starting from the least significant digit.
+Time Complexity: O(nk), where k is the number of digits.
+Space Complexity: O(n)
+
+    def counting_sort_radix(arr, exp):
+        n = len(arr)
+        output = [0] * n
+        count = [0] * 10
+    
+        for i in arr:
+            index = (i // exp) % 10
+            count[index] += 1
+    
+        for i in range(1, 10):
+            count[i] += count[i - 1]
+    
+        for i in range(n - 1, -1, -1):
+            index = (arr[i] // exp) % 10
+            output[count[index] - 1] = arr[i]
+            count[index] -= 1
+    
+        for i in range(n):
+            arr[i] = output[i]
+
+    def radix_sort(arr):
+        max_val = max(arr)
+        exp = 1
+        while max_val // exp > 0:
+            counting_sort_radix(arr, exp)
+            exp *= 10
+        return arr
+    
+    # Example
+    print(radix_sort([170, 45, 75, 90, 802, 24, 2, 66]))
+
+# 30. Bucket Sort
+Distribute elements into buckets, sort each bucket, and merge.
+Time Complexity: O(n + k)
+Space Complexity: O(n)
+    def bucket_sort(arr):
+        bucket = [[] for _ in range(len(arr))]
+    
+        for num in arr:
+            index = int(len(arr) * num)
+            bucket[index].append(num)
+    
+        for b in bucket:
+            b.sort()
+    
+        sorted_arr = []
+        for b in bucket:
+            sorted_arr.extend(b)
+    
+        return sorted_arr
+    
+    # Example
+    print(bucket_sort([0.25, 0.36, 0.58, 0.41, 0.29, 0.22, 0.40]))
+
+
+
+
 
 
 
