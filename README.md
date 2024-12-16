@@ -244,6 +244,141 @@ Time Complexity: O(m * n).
         if row_zero:
             for c in range(cols):
                 matrix[0][c] = 0
+# 15. Median of Two Sorted Arrays
+Problem: Find the median of two sorted arrays.
+Approach: Use binary search to partition the arrays.
+Time Complexity: O(log(min(m, n))).
+
+    def findMedianSortedArrays(nums1, nums2):
+        if len(nums1) > len(nums2):
+            nums1, nums2 = nums2, nums1
+        x, y = len(nums1), len(nums2)
+        low, high = 0, x
+    
+        while low <= high:
+            partitionX = (low + high) // 2
+            partitionY = (x + y + 1) // 2 - partitionX
+    
+            maxX = float('-inf') if partitionX == 0 else nums1[partitionX - 1]
+            minX = float('inf') if partitionX == x else nums1[partitionX]
+            maxY = float('-inf') if partitionY == 0 else nums2[partitionY - 1]
+            minY = float('inf') if partitionY == y else nums2[partitionY]
+    
+            if maxX <= minY and maxY <= minX:
+                if (x + y) % 2 == 0:
+                    return (max(maxX, maxY) + min(minX, minY)) / 2
+                else:
+                    return max(maxX, maxY)
+            elif maxX > minY:
+                high = partitionX - 1
+            else:
+                low = partitionX + 1
+
+# 16. Longest Increasing Subsequence (LIS)
+Problem: Find the length of the longest increasing subsequence.
+Approach: Use DP with binary search for optimization.
+Time Complexity: O(n log n).
+
+    def lengthOfLIS(nums):
+        sub = []
+        for num in nums:
+            i = bisect.bisect_left(sub, num)
+            if i == len(sub):
+                sub.append(num)
+            else:
+                sub[i] = num
+        return len(sub)
+
+# 17. Knapsack Problem
+Problem: Find the maximum value you can obtain with a weight limit.
+Approach: Use a 2D DP table to store subproblem solutions.
+Time Complexity: O(n * W), where n is the number of items and W is the weight limit.
+
+    def knapsack(weights, values, W):
+        n = len(weights)
+        dp = [[0 for _ in range(W + 1)] for _ in range(n + 1)]
+    
+        for i in range(1, n + 1):
+            for w in range(W + 1):
+                if weights[i-1] <= w:
+                    dp[i][w] = max(dp[i-1][w], dp[i-1][w-weights[i-1]] + values[i-1])
+                else:
+                    dp[i][w] = dp[i-1][w]
+        return dp[n][W]
+
+# 18. Breadth-First Search (BFS)
+Problem: Perform BFS traversal of a graph.
+Approach: Use a queue to process nodes level by level.
+Time Complexity: O(V + E), where V is vertices and E is edges.
+
+    from collections import deque
+    def bfs(graph, start):
+        visited = set()
+        queue = deque([start])
+        visited.add(start)
+    
+        while queue:
+            node = queue.popleft()
+            print(node, end=" ")
+    
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+
+
+# 19 . Dijkstra’s Algorithm
+Problem: Find the shortest path from a source to all other vertices in a weighted graph.
+Approach: Use a priority queue (min-heap).
+Time Complexity: O((V + E) * log V).
+
+    import heapq
+    def dijkstra(graph, start):
+        pq = [(0, start)]
+        distances = {vertex: float('infinity') for vertex in graph}
+        distances[start] = 0
+    
+        while pq:
+            current_distance, current_vertex = heapq.heappop(pq)
+    
+            if current_distance > distances[current_vertex]:
+                continue
+    
+            for neighbor, weight in graph[current_vertex].items():
+                distance = current_distance + weight
+    
+                if distance < distances[neighbor]:
+                    distances[neighbor] = distance
+                    heapq.heappush(pq, (distance, neighbor))
+    
+        return distances
+
+# 20. Topological Sorting
+Problem: Perform topological sort of a Directed Acyclic Graph (DAG).
+Approach: Use DFS with a stack or Kahn’s Algorithm (BFS-based).
+Time Complexity: O(V + E).
+
+    def topologicalSort(graph):
+        visited = set()
+        stack = []
+    
+        def dfs(node):
+            if node in visited:
+                return
+            visited.add(node)
+            for neighbor in graph[node]:
+                dfs(neighbor)
+            stack.append(node)
+    
+        for vertex in graph:
+            dfs(vertex)
+    
+        return stack[::-1]
+
+
+
+
+
 
 
 
