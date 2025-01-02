@@ -251,7 +251,7 @@
             output_field=DurationField()
         )
     )
-# 56.What are potential performance pitfalls when using annotations?
+# 46.What are potential performance pitfalls when using annotations?
     # Excessive joins from related fields.
     # Complex annotations can lead to slower queries.
     # Avoid overloading queries with too many annotations; split into smaller queries if necessary.
