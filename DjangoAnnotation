@@ -1,23 +1,23 @@
-# Dango Annotation question answer.
-1.What is annotation in Django?
-    Annotation in Django is used to add calculated fields to queryset results. 
-    It allows you to compute values dynamically based on fields in the model or related models.
-2.How is annotate() different from aggregate() in Django?
-    annotate(): Adds a calculated field to each record in the queryset.
-    aggregate(): Returns a single value for the entire queryset (e.g., sum, count).
-3.What types of calculations can you perform with annotations?
-    You can perform aggregations like Sum, Count, Avg, Min, and Max, as well as custom expressions using F, Case, When, and other Django ORM tools.
-4.How would you calculate the total price of items in an order using annotation?
+# # Dango Annotation question answer.
+# 1.What is annotation in Django?
+#     Annotation in Django is used to add calculated fields to queryset results. 
+#     It allows you to compute values dynamically based on fields in the model or related models.
+# 2.How is annotate() different from aggregate() in Django?
+#     annotate(): Adds a calculated field to each record in the queryset.
+#     aggregate(): Returns a single value for the entire queryset (e.g., sum, count).
+# 3.What types of calculations can you perform with annotations?
+#     You can perform aggregations like Sum, Count, Avg, Min, and Max, as well as custom expressions using F, Case, When, and other Django ORM tools.
+# 4.How would you calculate the total price of items in an order using annotation?
     from django.db.models import F, Sum
     orders = Order.objects.annotate(total_price=Sum(F('quantity') * F('price')))
-5.Can you use annotations to filter a queryset?
-    Yes, but you need to use annotate() first, then filter using the calculated field.
+# 5.Can you use annotations to filter a queryset?
+#     Yes, but you need to use annotate() first, then filter using the calculated field.
     products = Product.objects.annotate(total_sales=Sum('order_items__quantity'))
                .filter(total_sales__gte=100)
-6.How would you annotate the number of related objects for each instance?
+# 6.How would you annotate the number of related objects for each instance?
     from django.db.models import Count
     authors = Author.objects.annotate(book_count=Count('books'))
-7.How would you annotate a queryset using conditional logic?
+# 7.How would you annotate a queryset using conditional logic?
     from django.db.models import Case, When, IntegerField
     orders = Order.objects.annotate(
         high_value=Case(
@@ -26,15 +26,15 @@
             output_field=IntegerField()
         )
     )
-8.Can annotations reference other annotations?
+# 8.Can annotations reference other annotations?
     Yes, annotations can reference other annotations within the same queryset.
     orders = Order.objects.annotate(
               total=Sum(F('price') * F('quantity')),
               discount_price=F('total') * 0.9
               )
-9.What happens if you use annotate() with distinct() in a queryset?
-    Using distinct() in combination with annotate() can sometimes lead to unexpected results, as it might alter the aggregation behavior.
-10.How would you annotate users who have placed at least one order in the past month?
+# 9.What happens if you use annotate() with distinct() in a queryset?
+    # Using distinct() in combination with annotate() can sometimes lead to unexpected results, as it might alter the aggregation behavior.
+# 10.How would you annotate users who have placed at least one order in the past month?
     from django.db import models
     from django.contrib.auth.models import AbstractUser
     from django.utils.timezone import now
@@ -68,9 +68,80 @@
             filter=Q(orders__created_at__gte=last_month)
         )
     ).filter(recent_orders__gt=0)
-11.How would you annotate and sort products by their average rating?
+# 11.How would you annotate and sort products by their average rating?
     from django.db.models import Avg
     products = Product.objects.annotate(average_rating=Avg('reviews__rating')).order_by('-average_rating')
+# 12.What are F objects in Django, and how can they be used with annotations?
+    # F objects allow you to reference fields in your model in a query. They are commonly used in annotations for calculations involving multiple fields.
+    from django.db.models import F, Sum
+    products = Product.objects.annotate(profit=F('selling_price') - F('cost_price'))
+# 13.How can you annotate a queryset with a subquery?
+    # Use Subquery to perform a nested query as part of the annotation.
+    from django.db.models import Subquery, OuterRef
+    latest_order_date = Order.objects.filter(user_id=OuterRef('pk')).order_by('-date').values('date')[:1]
+    users = User.objects.annotate(last_order_date=Subquery(latest_order_date))
+# 14.What is the difference between using annotate() and using raw SQL in Django for custom calculations?
+#         annotate() provides ORM abstraction and works seamlessly with Django models, 
+#         while raw SQL can handle complex queries not easily supported by the ORM but at the cost of losing portability and readability.
+# 15.How would you annotate the percentage contribution of each product's sales to the total sales?
+        from django.db.models import Sum, F, FloatField
+        total_sales = Product.objects.aggregate(total=Sum(F('quantity') * F('price')))['total']
+        products = Product.objects.annotate(
+            sales_percentage=F('quantity') * F('price') * 100 / total_sales
+        )
+# 16.What are window functions, and how can they be used with Django annotations?
+    # Window functions allow you to perform calculations across a subset of rows. In Django, 
+    # use Window with annotations for advanced analytics like ranks or running totals.
+    from django.db.models import Window, F
+    from django.db.models.functions import Rank
+    products = Product.objects.annotate(rank=Window(expression=Rank(), order_by=F('sales').desc()))
+
+# 17.How would you annotate the highest-rated product in each category?
+    from django.db.models import Max
+    categories = Category.objects.annotate(highest_rating=Max('products__rating'))
+# 18.How can you annotate records based on multiple conditions?
+    from django.db.models import Case, When, IntegerField
+    products = Product.objects.annotate(
+                category_type=Case(
+                    When(category='Electronics', then=1),
+                    When(category='Clothing', then=2),
+                    default=0,
+                    output_field=IntegerField()
+                )
+            )
+# 19.How would you annotate the count of orders for users who have placed more than 5 orders?
+    from django.db.models import Count
+    users = User.objects.annotate(order_count=Count('orders')).filter(order_count__gt=5)
+# 20.How would you annotate users who have no orders?
+    users = User.objects.annotate(order_count=Count('orders')).filter(order_count=0)
+# 21.How would you annotate the cumulative sales for products ordered by date?
+    from django.db.models.functions import Window
+    from django.db.models import Sum
+    products = Product.objects.annotate(
+        cumulative_sales=Window(Sum('sales'), order_by=F('date').asc())
+    )
+# 22.How does Prefetch differ from annotate() for related fields?
+    # Prefetch is used to optimize queries by preloading related fields, while annotate() adds calculated fields to a queryset.
+# 23.How would you optimize a query that uses both annotate() and select_related()?
+    # Use select_related() for loading related models in the same query and ensure annotate() fields do not create unnecessary joins.
+# 24.Can you use annotations with ValuesQuerySet?
+    # Yes, but annotated fields must be included in values() explicitly if using .values() to retrieve specific fields.
+# 25.How would you annotate the total duration of a user’s active sessions?
+    from django.db.models import Sum, F
+
+    sessions = Session.objects.annotate(duration=F('end_time') - F('start_time')).aggregate(total_duration=Sum('duration'))
+# 26.How can you annotate a queryset with a value based on a related model’s field?
+    # Example: Annotate the latest blog post title for each author.
+    from django.db.models import Subquery, OuterRef
+    latest_post_title = BlogPost.objects.filter(author=OuterRef('pk')).order_by('-created_at').values('title')[:1]
+    authors = Author.objects.annotate(latest_post_title=Subquery(latest_post_title))
+
+
+
+
+
+
+
 
 
 
