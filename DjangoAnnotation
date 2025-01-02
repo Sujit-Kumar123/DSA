@@ -1,0 +1,78 @@
+# Dango Annotation question answer.
+1.What is annotation in Django?
+    Annotation in Django is used to add calculated fields to queryset results. 
+    It allows you to compute values dynamically based on fields in the model or related models.
+2.How is annotate() different from aggregate() in Django?
+    annotate(): Adds a calculated field to each record in the queryset.
+    aggregate(): Returns a single value for the entire queryset (e.g., sum, count).
+3.What types of calculations can you perform with annotations?
+    You can perform aggregations like Sum, Count, Avg, Min, and Max, as well as custom expressions using F, Case, When, and other Django ORM tools.
+4.How would you calculate the total price of items in an order using annotation?
+    from django.db.models import F, Sum
+    orders = Order.objects.annotate(total_price=Sum(F('quantity') * F('price')))
+5.Can you use annotations to filter a queryset?
+    Yes, but you need to use annotate() first, then filter using the calculated field.
+    products = Product.objects.annotate(total_sales=Sum('order_items__quantity'))
+               .filter(total_sales__gte=100)
+6.How would you annotate the number of related objects for each instance?
+    from django.db.models import Count
+    authors = Author.objects.annotate(book_count=Count('books'))
+7.How would you annotate a queryset using conditional logic?
+    from django.db.models import Case, When, IntegerField
+    orders = Order.objects.annotate(
+        high_value=Case(
+            When(total_price__gte=500, then=1),
+            default=0,
+            output_field=IntegerField()
+        )
+    )
+8.Can annotations reference other annotations?
+    Yes, annotations can reference other annotations within the same queryset.
+    orders = Order.objects.annotate(
+              total=Sum(F('price') * F('quantity')),
+              discount_price=F('total') * 0.9
+              )
+9.What happens if you use annotate() with distinct() in a queryset?
+    Using distinct() in combination with annotate() can sometimes lead to unexpected results, as it might alter the aggregation behavior.
+10.How would you annotate users who have placed at least one order in the past month?
+    from django.db import models
+    from django.contrib.auth.models import AbstractUser
+    from django.utils.timezone import now
+    from datetime import timedelta
+    
+    # Custom User model
+    class User(AbstractUser):
+        # Additional fields if needed
+        email = models.EmailField(unique=True)
+    
+        def __str__(self):
+            return self.username
+    
+    
+    # Order model
+    class Order(models.Model):
+        user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+        created_at = models.DateTimeField(auto_now_add=True)
+        total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+        def __str__(self):
+            return f"Order {self.id} - User: {self.user.username}"
+
+    from django.utils.timezone import now
+    from django.db.models import Count
+    
+    last_month = now() - timedelta(days=30)
+    users = User.objects.annotate(
+        recent_orders=Count(
+            'orders',
+            filter=Q(orders__created_at__gte=last_month)
+        )
+    ).filter(recent_orders__gt=0)
+11.How would you annotate and sort products by their average rating?
+    from django.db.models import Avg
+    products = Product.objects.annotate(average_rating=Avg('reviews__rating')).order_by('-average_rating')
+
+
+
+
+
